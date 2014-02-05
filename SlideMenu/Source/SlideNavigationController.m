@@ -164,12 +164,17 @@ static SlideNavigationController *singletonInstance;
 							options:UIViewAnimationOptionCurveEaseOut
 						 animations:^{
 			CGFloat width = self.horizontalSize;
-			CGFloat moveLocation = (self.horizontalLocation> 0) ? width : -1*width;
+			CGFloat moveLocation = (self.horizontalLocation> 0) ? width : -1 * width;
 			[self moveHorizontallyToLocation:moveLocation];
 		} completion:^(BOOL finished) {
 			
 			[super popToRootViewControllerAnimated:NO];
-			[super pushViewController:viewController animated:NO];
+            // fix
+            UIViewController *rootController = [self.viewControllers firstObject];
+            if (![viewController isEqual:rootController])
+            {
+                [super pushViewController:viewController animated:NO];
+            }
 			
 			[self closeMenuWithCompletion:^{
 				if (completion)
@@ -399,25 +404,25 @@ static SlideNavigationController *singletonInstance;
 	rect.origin.x = 0;
 	rect.origin.y = 0;
 	
-	BOOL isIos7 = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0");
+	//BOOL isIos7 = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0");
 	
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
 	{
-		if (!isIos7)
-		{
+	//	if (!isIos7)
+	//	{
 			// For some reasons in landscape belos the status bar is considered y=0, but in portrait it's considered y=20
 			rect.origin.x = (self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) ? 0 : STATUS_BAR_HEIGHT;
 			rect.size.width = self.view.frame.size.width-STATUS_BAR_HEIGHT;
-		}
+	//	}
 	}
 	else
 	{
-		if (!isIos7)
-		{
+		//if (!isIos7)
+		//{
 			// For some reasons in landscape belos the status bar is considered y=0, but in portrait it's considered y=20
 			rect.origin.y = (self.interfaceOrientation == UIInterfaceOrientationPortrait) ? STATUS_BAR_HEIGHT : 0;
 			rect.size.height = self.view.frame.size.height-STATUS_BAR_HEIGHT;
-		}
+		//}
 	}
 	
 	return rect;
